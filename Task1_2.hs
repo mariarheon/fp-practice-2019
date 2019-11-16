@@ -1,6 +1,7 @@
 module Task1_2 where
 import Todo(todo)
-import Prelude hiding (sin, cos, gcd)
+import Data.Fixed
+import Prelude hiding (gcd, sin, cos)
 
 {-
   Задание 1.2
@@ -9,13 +10,28 @@ import Prelude hiding (sin, cos, gcd)
 
 import Todo(todo)
 
+fact :: Double -> Double
+fact x 
+    | x < 0 = error("Argument should be greater than zero")
+    | x == 0 = 1
+    | otherwise = x * fact (x - 1)
+
+norm :: Double -> Double
+norm x = x `mod'` (-2 * pi)
+
 -- синус числа (формула Тейлора)
 sin :: Double -> Double
-sin x = todo
+sin x = sum$ take 10 $ taylorSin $ norm x
 
+taylorSin :: Double -> [Double]
+taylorSin x = [((-1) ** m) * (x ** (2 * m + 1)) / (fact (2 * m + 1)) | m <- [0..]]
+   
 -- косинус числа (формула Тейлора)
 cos :: Double -> Double
-cos x = todo
+cos x = sum$ take 10 $ taylorCos $ norm x
+
+taylorCos :: Double -> [Double]
+taylorCos x = [((-1) ** m) * (x ** (2 * m)) / (fact (2 * m)) | m <- [0..]]
 
 -- наибольший общий делитель двух чисел
 gcd :: Integer -> Integer -> Integer
@@ -23,11 +39,14 @@ gcd x y
     | x < 0 || y < 0 = error("Argument should be greater than zero")
     | x == 0 = y
     | y == 0 = x
-    | otherwise = gcd y (mod x y)
+    | otherwise = gcd y (x `mod` y)
 
 -- существует ли полный целочисленный квадрат в диапазоне [from, to)?
 doesSquareBetweenExist :: Integer -> Integer -> Bool
-doesSquareBetweenExist from to = todo
+doesSquareBetweenExist from to 
+    | from == to  = False
+    | floor (sqrt (fromIntegral from)) == ceiling (sqrt (fromIntegral from)) = True
+    | otherwise = doesSquareBetweenExist (from + 1) to
 
 -- является ли дата корректной с учётом количества дней в месяце и
 -- вискокосных годов?
@@ -53,18 +72,23 @@ isLeapYear year =
 pow :: Integer -> Integer -> Integer
 pow x y 
     | y < 0 = error("Power should be equal or greater than zero")
-    | y == 0 = 1
-    | y == 1 = x
+    | y == 0 || x == 1 = 1
+    | y == 1 || x == 0 = x
     | otherwise = if even y then x * pow x (y - 1)
                             else x * (pow (x * x) ((y - 1) `div` 2))
 -- является ли данное число простым
 isPrime :: Integer -> Bool
-isPrime x = todo
+isPrime x 
+    | x <= 1 = False
+    | x == 2 = True
+    | otherwise =  if  (length [n | n <- [2 .. isqrt x], x `mod` n == 0]) > 0 then False
+                   else True
 
-type Point2D = (Double, Double)
-
+isqrt :: Integer -> Integer
+isqrt x = floor (sqrt (fromIntegral x))
 -- рассчитайте площадь многоугольника по формуле Гаусса
 -- многоугольник задан списком координат
+type Point2D = (Double, Double)
 shapeArea :: [Point2D] -> Double
 shapeArea points = todo
 
