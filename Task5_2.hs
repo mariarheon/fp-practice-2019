@@ -18,7 +18,9 @@ fromList :: [a] -> Zipper a
 fromList lst = Zipper [] lst
 
 toList :: Zipper a -> [a]
-toList (Zipper left right) = concat [reverse (left) , right]
+toList z@(Zipper left right) 
+        | null left = right
+        | otherwise = toList (goLeft z) 
 
 goRight :: Zipper a -> Zipper a
 goRight z@(Zipper _ []) = z
@@ -44,19 +46,18 @@ removeLeft (Zipper (_:lt) r) = Zipper lt r
 -- вставки подсписка в середину и выделения подсписка
 
 concatZipper :: Zipper a -> Zipper a -> Zipper a
-concatZipper left right = Zipper (toList left) (toList right)
+concatZipper left right = Zipper (reverse (toList left)) (toList right)
 
 -- assuming numeration starts with 1
 insertManyAt :: Int -> Zipper a -> Zipper a -> Zipper a
 insertManyAt index (Zipper [] []) into = into
 insertManyAt index what (Zipper [] []) = what
-insertManyAt index (Zipper lefts rights) (Zipper leftt rightt) 
+insertManyAt index what@(Zipper lefts rights) into@(Zipper leftt rightt) 
                     | index <= 0 || index > len = error("Index should be greater than zero and less than the target zipper")
                     | index == 1 = concatZipper what into
                     | otherwise = insertManyAt (index - 1) what (goRight into)
                          where len =  length(concat[leftt, rightt])   
-                               what = Zipper lefts rights
-                               into = Zipper leftt rightt
+
 
 -- [from, to]
 subZipper :: Int -> Int -> Zipper a -> Zipper a
