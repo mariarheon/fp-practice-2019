@@ -55,20 +55,24 @@ insertManyAt index what (Zipper [] []) = what
 insertManyAt index what@(Zipper lefts rights) into@(Zipper leftt rightt) 
                     | index <= 0 || index > len = error("Index should be greater than zero and less than the target zipper")
                     | index == 1 = concatZipper what into
-                    | otherwise = insertManyAt (index - 1) what (goRight into)
-                         where len =  length(concat[leftt, rightt])   
+                    | otherwise = insertManyAt (index - 1) (Zipper (lefts ++ [head(toList into)]) rights) (removeRight $ fromList(toList into))
+                         where len =  length(toList into)   
 
 
 -- [from, to]
 subZipper :: Int -> Int -> Zipper a -> Zipper a
 subZipper from to (Zipper [] []) = error("Zipper is empty")
-subZipper from to (Zipper left right)
+subZipper from to z@(Zipper left right)
                     | from <= 0 || to <= 0 = error("Borders should be greater than zero")
                     | from > len || to > len = error("Borders should be  equal or less than the length of the zipper")
                     | from > to = error("(To) value should be equal or greater than (From) value")
                     | otherwise = fromList( take (to - from + 1) (drop (from - 1) ( toList (Zipper left right) ) ) )               
-                        where len =  length(concat[left, right])
+                        where len =  length(toList z)
 
 a = [1,2,3,4,5]
 b = [6,7,8,9,0]
 c = Zipper a b
+
+e = [16,19]
+f = [20,22]
+d = Zipper e f
