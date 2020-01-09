@@ -58,7 +58,7 @@ normalize wpn = fromInt (toInt wpn)
 compare' :: WeirdPeanoNumber -> WeirdPeanoNumber -> Ordering
 compare' wpn1 wpn2 | toInt wpn1 > toInt wpn2 = GT
                    | toInt wpn1 < toInt wpn2 = LT
-                   | toInt wpn1 = toInt wpn2 = EQ               
+                   | toInt wpn1 == toInt wpn2 = EQ               
       
 
 quotRem' :: WeirdPeanoNumber -> WeirdPeanoNumber -> (WeirdPeanoNumber, WeirdPeanoNumber)
@@ -69,7 +69,7 @@ quotRem' wpn1 wpn2 = (quot, rem)
                         rem = (abs wpn1) - abs(wpn2 * quot)
                         signTot = signum wpn1 * signum wpn2
  
-wpnQuot :: WeirdPeanoNumber -> WeirdPeanoNumber -> (WeirdPeanoNumber
+wpnQuot :: WeirdPeanoNumber -> WeirdPeanoNumber -> WeirdPeanoNumber
 wpnQuot wpn1 wpn2 | (wpn1 - wpn2) <= Zero = Zero
                   | otherwise = (quot (wpn1-wpn2) wpn2) + 1
                   
