@@ -56,11 +56,23 @@ normalize :: WeirdPeanoNumber -> WeirdPeanoNumber
 normalize wpn = fromInt (toInt wpn)
 
 compare' :: WeirdPeanoNumber -> WeirdPeanoNumber -> Ordering
-compare' = todo
+compare' wpn1 wpn2 | toInt wpn1 > toInt wpn2 = GT
+                   | toInt wpn1 < toInt wpn2 = LT
+                   | toInt wpn1 = toInt wpn2 = EQ               
+      
 
 quotRem' :: WeirdPeanoNumber -> WeirdPeanoNumber -> (WeirdPeanoNumber, WeirdPeanoNumber)
-quotRem' = todo
-
+quotRem' _ Zero = error("Division by zero!")
+quotRem' Zero _ = (Zero, Zero)
+quotRem' wpn1 wpn2 = (quot, rem)
+                  where quot = signTot * wpnQuot (abs wpn1) (abs wpn2) 
+                        rem = (abs wpn1) - abs(wpn2 * quot)
+                        signTot = signum wpn1 * signum wpn2
+ 
+wpnQuot :: WeirdPeanoNumber -> WeirdPeanoNumber -> (WeirdPeanoNumber
+wpnQuot wpn1 wpn2 | (wpn1 - wpn2) <= Zero = Zero
+                  | otherwise = (quot (wpn1-wpn2) wpn2) + 1
+                  
 add :: WeirdPeanoNumber -> WeirdPeanoNumber -> WeirdPeanoNumber
 add wpn1 Zero = wpn1
 add wpn1 (Succ wpn2) = Succ (wpn1 + wpn2)
