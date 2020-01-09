@@ -43,6 +43,7 @@ instance Semigroup (PSetXor a) where
 -- То есть наш fmap будет выглядеть следующим образом:
 -- ( ( a -> Bool ) -> ( b -> Bool )) -> f ( a -> Bool ) -> f ( b -> Bool ).
 -- Просторы интернета и материалы лекций мне сообщили, что Haskell пока не умеет применять функцию к аргументу другой функции.
+-- Поэтому просто напишем, что не зависимо от входного значени будет false.
 instance  Functor PSetOr where
     fmap func (PSetOr a) = PSetOr(\x -> False)
 
