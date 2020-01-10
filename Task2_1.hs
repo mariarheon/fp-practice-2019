@@ -49,18 +49,27 @@ insert (k, v) t =
 
 -- Удаление элемента по ключу
 remove :: Integer -> TreeMap v -> TreeMap v
-remove i t = todo
---    case t of
---       Empty -> Empty
---        Node (key, value) left right
---            | key > i -> Node (key, value) (remove i left) right
---            | key > i -> Node (key, value) left (remove i right)
---            | key == i ->
---                case (left, right) of
---                    (Empty, Empty) -> Empty
---                    (left, Empty) -> left
---                    (Empty, right) -> right
---                    (left, right) -> 
+remove i t = 
+    case t of
+        Empty -> Empty
+        Node (key, value) left right
+            | key > i -> Node (key, value) (remove i left) right
+            | key > i -> Node (key, value) left (remove i right)
+            | key == i ->
+                case (left, right) of
+                    (Empty, Empty) -> Empty
+                    (left, Empty) -> left
+                    (Empty, right) -> right
+                    (left, right) -> remove' left right
+
+remove' :: TreeMap v -> TreeMap v -> TreeMap v
+remove' left right = 
+        case right of 
+            Empty -> left
+            Node (key, value) left' right' ->
+                case left' of
+                    Empty -> Node (key, value) left right'
+                    otherwise -> Node (key, value) (remove' left left') right'
 
 -- Поиск ближайшего снизу ключа относительно заданного
 nearestLE :: Integer -> TreeMap v -> (Integer, v)
